@@ -1,0 +1,165 @@
+// Prisma schema untuk SPGE Groundcheck System (SGS)
+// Database: Supabase (PostgreSQL)
+// Prisma Version: 5.x
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+model User {
+  id            String   @id @default(cuid())
+  username      String   @unique
+  password      String
+  nama          String
+  role          String
+  email         String?  @unique
+  phone         String?
+  avatar        String?
+  isActive      Boolean  @default(true)
+  lastLogin     DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tasks         Task[]
+  signatures    DigitalSignature[]
+
+  @@index([username])
+  @@index([role])
+  @@map("users")
+}
+
+model Divisi {
+  id            String   @id @default(cuid())
+  kode          String   @unique
+  nama          String
+  deskripsi     String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  kemandoran    Kemandoran[]
+  tasks         Task[]
+
+  @@index([kode])
+  @@map("divisi")
+}
+
+model Kemandoran {
+  id            String   @id @default(cuid())
+  kode          String   @unique
+  nama          String
+  namaMandor    String?
+  divisiId      String
+  deskripsi     String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  divisi        Divisi   @relation(fields: [divisiId], references: [id], onDelete: Cascade)
+  tasks         Task[]
+
+  @@index([kode])
+  @@index([divisiId])
+  @@map("kemandoran")
+}
+
+model Task {
+  id            String    @id @default(cuid())
+  nomorTask     String    @unique
+  namaKrani     String
+  userId        String
+  divisiId      String
+  kemandoranId  String
+  notes         String?   @db.Text
+  status        String    @default("draft")
+  submittedAt   DateTime?
+  approvedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  divisi            Divisi            @relation(fields: [divisiId], references: [id], onDelete: Cascade)
+  kemandoran        Kemandoran        @relation(fields: [kemandoranId], references: [id], onDelete: Cascade)
+  tphAttachments    TphAttachment[]
+  signature         DigitalSignature?
+
+  @@index([nomorTask])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("tasks")
+}
+
+model TphAttachment {
+  id            String    @id @default(cuid())
+  taskId        String
+  tphNumber     Int
+  photos        String    @db.Text
+  notes         String?   @db.Text
+  latitude      Float?
+  longitude     Float?
+  capturedAt    DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  task          Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@map("tph_attachments")
+}
+
+model DigitalSignature {
+  id            String   @id @default(cuid())
+  userId        String
+  taskId        String   @unique
+  signatureData String   @db.Text
+  signedAt      DateTime @default(now())
+  createdAt     DateTime @default(now())
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task          Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("digital_signatures")
+}
+
+model OfflineSyncQueue {
+  id            String    @id @default(cuid())
+  action        String
+  tableName     String
+  recordId      String
+  data          String    @db.Text
+  synced        Boolean   @default(false)
+  syncedAt      DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([synced])
+  @@map("offline_sync_queue")
+}
+
+model AuditLog {
+  id            String    @id @default(cuid())
+  userId        String?
+  action        String
+  tableName     String?
+  recordId      String?
+  oldData       String?   @db.Text
+  newData       String?   @db.Text
+  ipAddress     String?
+  userAgent     String?
+  createdAt     DateTime  @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@map("audit_logs")
+}

@@ -1,0 +1,343 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --primary: 24 95% 53%;
+  --primary-foreground: 60 9.1% 97.8%;
+  --secondary: 24 14.3% 95.9%;
+  --secondary-foreground: 24 9.1% 10%;
+  --muted: 24 14.3% 95.9%;
+  --muted-foreground: 24 5.4% 63.9%;
+  --accent: 24 14.3% 95.9%;
+  --accent-foreground: 24 9.1% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --border: 24 5.9% 90%;
+  --input: 24 5.9% 90%;
+  --ring: 24 95% 53%;
+  --radius: 0.75rem;
+  
+  /* SGS Custom Colors */
+  --sgs-orange: 24 95% 53%;
+  --sgs-orange-dark: 24 95% 40%;
+  --sgs-orange-light: 24 95% 70%;
+  --sgs-green: 120 40% 45%;
+  --sgs-green-light: 120 40% 60%;
+  --sgs-brown: 30 30% 30%;
+  --sgs-cream: 40 30% 95%;
+}
+
+.dark {
+  --background: 20 14.3% 4.1%;
+  --foreground: 60 9.1% 97.8%;
+  --card: 20 14.3% 4.1%;
+  --card-foreground: 60 9.1% 97.8%;
+  --popover: 20 14.3% 4.1%;
+  --popover-foreground: 60 9.1% 97.8%;
+  --primary: 24 95% 53%;
+  --primary-foreground: 60 9.1% 97.8%;
+  --secondary: 12 6.5% 15.1%;
+  --secondary-foreground: 60 9.1% 97.8%;
+  --muted: 12 6.5% 15.1%;
+  --muted-foreground: 24 5.4% 63.9%;
+  --accent: 12 6.5% 15.1%;
+  --accent-foreground: 60 9.1% 97.8%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --border: 12 6.5% 15.1%;
+  --input: 12 6.5% 15.1%;
+  --ring: 24 95% 53%;
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  /* SGS Colors */
+  --color-sgs-orange: hsl(var(--sgs-orange));
+  --color-sgs-orange-dark: hsl(var(--sgs-orange-dark));
+  --color-sgs-orange-light: hsl(var(--sgs-orange-light));
+  --color-sgs-green: hsl(var(--sgs-green));
+  --color-sgs-green-light: hsl(var(--sgs-green-light));
+  --color-sgs-brown: hsl(var(--sgs-brown));
+  --color-sgs-cream: hsl(var(--sgs-cream));
+}
+
+/* Base Styles */
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* SGS Custom Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px hsl(24 95% 53% / 0.3); }
+  50% { box-shadow: 0 0 40px hsl(24 95% 53% / 0.6); }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slide-down {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes leaf-fall {
+  0% { transform: translateY(-100%) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+/* Animation Classes */
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-slide-up { animation: slide-up 0.5s ease-out forwards; }
+.animate-slide-down { animation: slide-down 0.5s ease-out forwards; }
+.animate-slide-in-right { animation: slide-in-right 0.5s ease-out forwards; }
+.animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
+.animate-scale-in { animation: scale-in 0.3s ease-out forwards; }
+.animate-shimmer { 
+  background: linear-gradient(90deg, transparent, hsl(24 95% 53% / 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+.animate-spin-slow { animation: spin-slow 20s linear infinite; }
+.animate-bounce-gentle { animation: bounce-gentle 2s ease-in-out infinite; }
+
+/* Stagger Animation Delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* SGS Glass Effect */
+.sgs-glass {
+  background: hsl(0 0% 100% / 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid hsl(24 95% 53% / 0.2);
+}
+
+.sgs-glass-dark {
+  background: hsl(20 14.3% 4.1% / 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid hsl(24 95% 53% / 0.3);
+}
+
+/* SGS Gradient Backgrounds */
+.sgs-gradient-main {
+  background: linear-gradient(135deg, 
+    hsl(24 95% 53%) 0%, 
+    hsl(24 95% 45%) 50%, 
+    hsl(30 70% 40%) 100%
+  );
+}
+
+.sgs-gradient-light {
+  background: linear-gradient(135deg, 
+    hsl(40 30% 98%) 0%, 
+    hsl(40 30% 95%) 50%, 
+    hsl(40 30% 92%) 100%
+  );
+}
+
+.sgs-gradient-green {
+  background: linear-gradient(135deg, 
+    hsl(120 40% 45%) 0%, 
+    hsl(120 35% 40%) 50%, 
+    hsl(120 30% 35%) 100%
+  );
+}
+
+/* Palm Oil Theme Pattern */
+.palm-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c-2 0-3 1-3 3v10c0 2 1 3 3 3s3-1 3-3V8c0-2-1-3-3-3zm0 34c-2 0-3 1-3 3v10c0 2 1 3 3 3s3-1 3-3v-10c0-2-1-3-3-3zm-15-17c-2 0-3 1-3 3s1 3 3 3h10c2 0 3-1 3-3s-1-3-3-3H15zm30 0c-2 0-3 1-3 3s1 3 3 3h10c2 0 3-1 3-3s-1-3-3-3H45z' fill='%23f97316' fill-opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* Card Hover Effects */
+.sgs-card {
+  transition: all 0.3s ease;
+}
+
+.sgs-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px hsl(24 95% 53% / 0.15);
+}
+
+/* Button Styles */
+.sgs-btn-primary {
+  background: linear-gradient(135deg, hsl(24 95% 53%), hsl(24 95% 40%));
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px hsl(24 95% 53% / 0.3);
+}
+
+.sgs-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px hsl(24 95% 53% / 0.4);
+}
+
+.sgs-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Signature Canvas */
+.signature-canvas {
+  border: 2px dashed hsl(24 95% 53% / 0.5);
+  background: hsl(40 30% 98%);
+  border-radius: 0.75rem;
+  cursor: crosshair;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(40 30% 95%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(24 95% 53% / 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(24 95% 53% / 0.7);
+}
+
+/* Focus States */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(24 95% 53% / 0.2);
+}
+
+/* Loading Spinner */
+.sgs-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid hsl(24 95% 53% / 0.2);
+  border-top-color: hsl(24 95% 53%);
+  border-radius: 50%;
+  animation: spin-slow 1s linear infinite;
+}
+
+/* Photo Grid */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.photo-item {
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.photo-item:hover {
+  transform: scale(1.05);
+}
+
+/* Panel Transitions */
+.panel-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.panel-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.5s ease;
+}
+
+/* Leaf decorations */
+.leaf-decoration {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  opacity: 0.1;
+  animation: leaf-fall 15s linear infinite;
+}
+
+/* Status Badges */
+.status-draft { background: hsl(0 0% 90%); color: hsl(0 0% 40%); }
+.status-submitted { background: hsl(45 100% 90%); color: hsl(45 100% 30%); }
+.status-approved { background: hsl(120 50% 90%); color: hsl(120 50% 30%); }

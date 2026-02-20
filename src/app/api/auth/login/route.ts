@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { success: false, error: 'Terjadi kesalahan sistem' },
+      { success: false, error: 'Terjadi kesalahan sistem, hubungi admin' },
       { status: 500 }
     );
   }

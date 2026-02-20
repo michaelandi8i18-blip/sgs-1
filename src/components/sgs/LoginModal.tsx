@@ -221,7 +221,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
                   <div className="pt-4 border-t border-gray-100">
                     <p className="text-center text-gray-400 text-xs">
-                      Default: admin / admin123 atau krani1 / user123
+                      Hubungi Mantri / Kasie untuk Petunjuk Login
                     </p>
                   </div>
                 </motion.div>

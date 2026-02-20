@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuthStore } from '@/lib/store';
+import { supabase } from '@/lib/supabaseClient';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -32,22 +33,30 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     }
   }, [isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
-
-   import { supabase } from '@/lib/supabaseClient'; // pastikan lo import client
-
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setError('');
   setIsLoading(true);
 
   try {
-    //  Login pakai Supabase Auth
+    // 1️⃣ Cari email dari username
+    const { data: userProfile, error: profileError } = await supabase
+      .from('users')
+      .select('user_id, email, username')
+      .eq('username', username)
+      .single();
+
+    if (profileError || !userProfile) {
+      setError('Username tidak ditemukan');
+      setIsLoading(false);
+      return;
+    }
+
+    const email = userProfile.email; // ambil email dari database
+
+    // 2️⃣ Login pakai Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email: username, // kalau lo pakai username, harus diubah ke email
+      email, 
       password,
     });
 
@@ -59,18 +68,17 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     const userId = authData.user.id;
 
-    //  Ambil profile dari table `users`
-    let { data: profile, error: profileError } = await supabase
+    // 3️⃣ Pastikan profile ada di table users, insert kalau belum
+    let { data: profile } = await supabase
       .from('users')
       .select('*')
       .eq('user_id', userId)
       .single();
 
-    // Kalau belum ada profile, insert baru
     if (!profile) {
       const { data: newProfile, error: insertError } = await supabase
         .from('users')
-        .insert([{ user_id: userId, username }])
+        .insert([{ user_id: userId, username, email }])
         .select()
         .single();
 
@@ -79,7 +87,6 @@ const handleSubmit = async (e: React.FormEvent) => {
         setIsLoading(false);
         return;
       }
-
       profile = newProfile;
     }
 
@@ -92,12 +99,6 @@ const handleSubmit = async (e: React.FormEvent) => {
     setIsLoading(false);
   }
 };
-    } catch {
-      setError('Terjadi kesalahan sistem');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <AnimatePresence>
@@ -261,7 +262,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
                   <div className="pt-4 border-t border-gray-100">
                     <p className="text-center text-gray-400 text-xs">
-                      Hubungi Mantri / Kasie untuk Petunjuk Login
+                      Default: admin / admin123 atau krani1 / user123
                     </p>
                   </div>
                 </motion.div>

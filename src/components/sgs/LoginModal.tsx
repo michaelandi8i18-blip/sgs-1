@@ -37,21 +37,61 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setError('');
     setIsLoading(true);
 
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
+   import { supabase } from '@/lib/supabaseClient'; // pastikan lo import client
 
-      const data = await response.json();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError('');
+  setIsLoading(true);
 
-      if (data.success && data.user) {
-        login(data.user);
-        onClose();
-      } else {
-        setError(data.error || 'Login gagal');
+  try {
+    //  Login pakai Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email: username, // kalau lo pakai username, harus diubah ke email
+      password,
+    });
+
+    if (authError || !authData.user) {
+      setError(authError?.message || 'Login gagal');
+      setIsLoading(false);
+      return;
+    }
+
+    const userId = authData.user.id;
+
+    //  Ambil profile dari table `users`
+    let { data: profile, error: profileError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    // Kalau belum ada profile, insert baru
+    if (!profile) {
+      const { data: newProfile, error: insertError } = await supabase
+        .from('users')
+        .insert([{ user_id: userId, username }])
+        .select()
+        .single();
+
+      if (insertError) {
+        setError(insertError.message);
+        setIsLoading(false);
+        return;
       }
+
+      profile = newProfile;
+    }
+
+    // 4️⃣ Simpan ke state (Zustand)
+    login(profile);
+    onClose();
+  } catch (err: any) {
+    setError(err.message || 'Terjadi kesalahan sistem');
+  } finally {
+    setIsLoading(false);
+  }
+};
     } catch {
       setError('Terjadi kesalahan sistem');
     } finally {
